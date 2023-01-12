@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+  <script>
+
+    // Creamos un canvas para dibujar el juego
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = 500;
+canvas.height = 500;
+document.body.appendChild(canvas);
+
+// Creamos una serpiente como una matriz de coordenadas
+let snake = [[5, 5]];
+
+// Creamos una comida aleatoria en una ubicación aleatoria
+let food = [10, 10];
+
+// Establecemos una velocidad inicial para la serpiente
+const speed = 1;
+
+// Establecemos una dirección inicial para la serpiente
+let direction = 'down';
+
+// Dibujamos la serpiente y la comida en el canvas
+function draw() {
+  // Borramos el canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Dibujamos la serpiente
+  ctx.fillStyle = 'green';
+  for (let i = 0; i < snake.length; i++) {
+    ctx.fillRect(snake[i][0]*10, snake[i][1]*10, 10, 10);
+  }
+
+  // Dibujamos la comida
+  ctx.fillStyle = 'red';
+  ctx.fillRect(food[0]*10, food[1]*10, 10, 10);
+}
+
+// Actualizamos la posición de la serpiente
+function update() {
+  // Obtenemos la cabeza de la serpiente
+  let head = snake[0];
+
+  // Según la dirección, actualizamos la posición de la cabeza
+  if (direction == 'down') {
+    head = [head[0], head[1]+speed];
+  } else if (direction == 'up') {
+    head = [head[0], head[1]-speed];
+  } else if (direction == 'left') {
+    head = [head[0]-speed, head[1]];
+  } else if (direction == 'right') {
+    head = [head[0]+speed, head[1]];
+  }
+
+  // Añadimos la nueva cabeza a la serpiente
+  snake.unshift(head);
+
+  // Si la serpiente come la comida, no eliminamos la cola
+  if (head[0] == food[0] && head[1] == food[1]) {
+    food = [Math.floor(Math.random()*50), Math.floor(Math.random()*50)];
+  } else {
+    // Si no come la comida, eliminamos la cola de la serpiente
+    snake.pop();
+  }
+}
+
+// Creamos un bucle del juego que actualiza y dibuja la serpiente cada vez
+function gameLoop() {
+  update();
+  draw();
+  setTimeout(gameLoop, 100);
+}
+
+// Iniciamos el bucle del juego
+gameLoop();
+
+// Escuchamos las flechas del teclado para cambiar la dirección de la serpiente
+document.addEventListener('keydown', function(e) {
+  if (e.keyCode == 37 && direction != 'right') {
+    direction = 'left';
+  } else if (e.keyCode == 38 && direction != 'down') {
+    direction = 'up';
+  } else if (e.keyCode == 39 && direction != 'left') {
+    direction = 'right';
+  } else if (e.keyCode == 40 && direction != 'up') {
+    direction = 'down';
+  }
+});
+
+
+
+
+
+  </script>
+  
+</body>
+</html>
